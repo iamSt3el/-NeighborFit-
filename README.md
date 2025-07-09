@@ -3,7 +3,7 @@
 A full-stack MERN application that helps young professionals find ideal PG accommodations in Bangalore using an intelligent matching algorithm.
 
 # Live link (hosted on ec2)
-http://13.235.104.179:3000/
+https://neighborfit.duckdns.org/
 
 ## 🎯 Project Overview
 
