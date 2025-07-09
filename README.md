@@ -3,7 +3,6 @@
 ## Project Report
 
 **Live Demo:** [https://neighborfit.duckdns.org/](https://neighborfit.duckdns.org/)  
-**GitHub Repository:** [https://github.com/username/neighborfit-placement-project](https://github.com/username/neighborfit-placement-project)
 
 ---
 
