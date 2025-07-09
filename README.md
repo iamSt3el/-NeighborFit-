@@ -10,7 +10,7 @@
 
 NeighborFit is a full-stack web application developed as a solution to the neighborhood-lifestyle matching problem for young professionals seeking PG accommodations in Bangalore. This project was completed as part of a 2-week technical assignment, demonstrating systematic problem-solving, algorithmic thinking, and full-stack development capabilities.
 
-The application leverages real-world data from over 500 PG listings across Bangalore's prime areas, implementing an intelligent matching algorithm that considers budget constraints, room preferences, gender requirements, and lifestyle factors to provide personalized recommendations with quantified match scores.
+The application leverages real-world data from over 100 PG listings across Bangalore's prime areas, implementing an intelligent matching algorithm that considers budget constraints, room preferences, gender requirements, and lifestyle factors to provide personalized recommendations with quantified match scores.
 
 ## Problem Statement and Research
 
@@ -97,7 +97,7 @@ Total Score = (Budget Score × 0.25) +
 ## Data Processing Pipeline
 
 ### Data Collection and Normalization
-The application processes real-world data from 500+ PG listings, handling:
+The application processes real-world data from 100+ PG listings, handling:
 - Price normalization and validation
 - Amenity standardization
 - Location mapping and area classification
@@ -243,7 +243,7 @@ The implemented solution successfully addresses the core problem through:
 ```
 MONGODB_URI=mongodb://localhost:27017/neighborfit
 JWT_SECRET=your_jwt_secret_here
-PORT=5000
+PORT=1000
 NODE_ENV=development
 ```
 
