@@ -1,13 +1,22 @@
 import React from 'react';
 import PGCard from './PGCard';
+import SkeletonCard from './SkeletonCard';
 
 const PGList = ({ pgs, loading, error }) => {
+
   if (loading) {
     return (
       <div className="pg-list-container">
-        <div className="loading-state">
-          <i className="fas fa-spinner fa-spin fa-3x"></i>
-          <p>Finding your perfect PG matches...</p>
+        <div className="results-header">
+          <h2>
+            <i className="fas fa-search"></i>
+            Searching for your perfect PG...
+          </h2>
+        </div>
+        <div className="pg-grid">
+          {Array(6).fill(0).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))}
         </div>
       </div>
     );

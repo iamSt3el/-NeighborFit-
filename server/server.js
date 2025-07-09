@@ -6,6 +6,7 @@ require('dotenv').config();
 const connectDB = require('./config/database');
 const pgRoutes = require('./routes/pgRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use('/api/pgs', pgRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/auth', authRoutes);
 
 
 // Error handling middleware

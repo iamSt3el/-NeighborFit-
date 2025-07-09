@@ -17,6 +17,7 @@ import {
 
 const SearchFilters = ({ searchParams, onSearch, loading }) => {
   const [filters, setFilters] = useState(searchParams);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
     setFilters(searchParams);
@@ -39,10 +40,87 @@ const SearchFilters = ({ searchParams, onSearch, loading }) => {
   return (
     <div className="search-filters">
       <div className="filters-container">
-        <h3><i className="fas fa-brain"></i> Smart Matching Preferences</h3>
-        <p className="subtitle">Set your priorities to get personalized match scores for each PG</p>
+        <div className="filters-header">
+          <h3><i className="fas fa-brain"></i> Smart Matching Preferences</h3>
+          <p className="subtitle">Set your priorities to get personalized match scores for each PG</p>
+        </div>
         
-        <div className="preferences-grid">
+        <div className="filters-wrapper">
+          <div className="quick-filters">
+            <div className="horizontal-filters">
+              <div className="filter-item">
+                <label htmlFor="area">
+                  <i className="fas fa-map-marker-alt"></i>
+                  Location
+                </label>
+                <select
+                  id="area"
+                  value={filters.area}
+                  onChange={(e) => handleFilterChange('area', e.target.value)}
+                  className="compact-select"
+                >
+                  {AREAS.map(area => (
+                    <option key={area.value} value={area.value}>
+                      {area.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="filter-item">
+                <label htmlFor="roomType">
+                  <i className="fas fa-bed"></i>
+                  Room Type
+                </label>
+                <select
+                  id="roomType"
+                  value={filters.roomType}
+                  onChange={(e) => handleFilterChange('roomType', e.target.value)}
+                  className="compact-select"
+                >
+                  {ROOM_TYPES.map(type => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="filter-item budget-item">
+                <label htmlFor="budget">
+                  <i className="fas fa-rupee-sign"></i>
+                  Budget
+                </label>
+                <div className="budget-control">
+                  <input
+                    id="budget"
+                    type="range"
+                    min={BUDGET_RANGE.min}
+                    max={BUDGET_RANGE.max}
+                    step={BUDGET_RANGE.step}
+                    value={filters.budget}
+                    onChange={handleBudgetChange}
+                    className="compact-slider"
+                  />
+                  <span className="budget-display">₹{(filters.budget/1000).toFixed(0)}k</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="advanced-filters">
+            <button 
+              type="button" 
+              className="advanced-toggle" 
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              <i className={`fas fa-chevron-${showAdvanced ? 'up' : 'down'}`}></i>
+              {showAdvanced ? 'Hide' : 'Show'} Advanced Filters
+            </button>
+            
+            {showAdvanced && (
+              <div className="advanced-filters-content">
+                <div className="preferences-grid">
           {/* Basic Preferences */}
           <div className="preference-section">
             <h4><i className="fas fa-sliders-h"></i> Basic Preferences</h4>
@@ -368,53 +446,65 @@ const SearchFilters = ({ searchParams, onSearch, loading }) => {
             </div>
           </div>
           </div>
-        </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="search-actions">
+            <div className="match-score-filter">
+              <label htmlFor="minScore">
+                <i className="fas fa-percentage"></i>
+                Minimum Match Score: {filters.minScore}%
+              </label>
+              <input
+                id="minScore"
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value={filters.minScore}
+                onChange={(e) => handleFilterChange('minScore', parseInt(e.target.value))}
+                className="score-slider"
+              />
+            </div>
 
-        <div className="filter-group">
-          <label htmlFor="minScore">
-            Minimum Match Score: {filters.minScore}%
-          </label>
-          <input
-            id="minScore"
-            type="range"
-            min="0"
-            max="100"
-            step="5"
-            value={filters.minScore}
-            onChange={(e) => handleFilterChange('minScore', parseInt(e.target.value))}
-            className="score-slider"
-          />
-        </div>
+            <div className="matching-toggle">
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={filters.enableMatching !== false}
+                  onChange={(e) => handleFilterChange('enableMatching', e.target.checked)}
+                />
+                <span className="slider"></span>
+              </label>
+              <div className="toggle-info">
+                <span>Smart Matching Algorithm</span>
+                <div className="matching-toggle-description">
+                  Get personalized PG recommendations based on your preferences
+                </div>
+              </div>
+            </div>
 
-        <div className="matching-toggle">
-          <label className="toggle-switch">
-            <input
-              type="checkbox"
-              checked={filters.enableMatching !== false}
-              onChange={(e) => handleFilterChange('enableMatching', e.target.checked)}
-            />
-            <span className="slider"></span>
-          </label>
-          <span>Enable Smart Matching</span>
+            <button 
+              className="search-button" 
+              onClick={handleSearch}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin"></i>
+                  Searching...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-search"></i>
+                  Find Perfect PGs
+                </>
+              )}
+            </button>
+          </div>
         </div>
-
-        <button 
-          className="search-button" 
-          onClick={handleSearch}
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <i className="fas fa-spinner fa-spin"></i>
-              Searching...
-            </>
-          ) : (
-            <>
-              <i className="fas fa-search"></i>
-              Find PGs
-            </>
-          )}
-        </button>
       </div>
     </div>
   );

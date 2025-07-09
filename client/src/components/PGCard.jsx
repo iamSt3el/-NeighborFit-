@@ -1,12 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getScoreColor, getScoreLabel, formatPrice } from '../utils/constants';
+import ImageGallery from './ImageGallery';
 
 const PGCard = ({ pg }) => {
+  const navigate = useNavigate();
   const scoreColor = getScoreColor(pg.matchScore);
   const scoreLabel = getScoreLabel(pg.matchScore);
 
+  const handleCardClick = () => {
+    navigate(`/pg/${pg.id}`);
+  };
+
   return (
-    <div className="pg-card">
+    <div className="pg-card" onClick={handleCardClick}>
+      
       <div className="pg-header">
         <div className="pg-title">
           <h3>{pg.name}</h3>
@@ -22,6 +30,8 @@ const PGCard = ({ pg }) => {
       </div>
 
       <div className="pg-content">
+        <ImageGallery images={pg.images} pgName={pg.name} />
+        
         <div className="pg-details">
           <div className="detail-item">
             <i className="fas fa-rupee-sign"></i>
