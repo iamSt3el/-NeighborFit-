@@ -195,32 +195,52 @@ The application supports multiple deployment environments:
 ```yaml
 version: '3.8'
 services:
+  mongodb:
+    image: mongo:6.0
+    container_name: neighborfit-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: neighborfit
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - neighborfit-network
+      
+  server:
+    image: st3el/neighborfit-server:latest
+    container_name: neighborfit-server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/neighborfit?authSource=admin
+      - NODE_ENV=production
+    networks:
+      - neighborfit-network
+      
   client:
-    build: ./client
+    image: st3el/neighborfit-client:latest
+    container_name: neighborfit-client
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-  
-  server:
-    build: ./server
-    ports:
-      - "1000:1000"
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongo:27017/neighborfit
-    depends_on:
-      - mongo
-  
-  mongo:
-    image: mongo:5.0
-    volumes:
-      - mongo_data:/data/db
-    ports:
-      - "27017:27017"
+      - REACT_APP_API_URL=https://neighborfit.duckdns.org/api  # Updated to use your domain
+      - HOST=0.0.0.0  # Add this
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true  # Add this
+      - WATCHPACK_POLLING=true  # Add this for better file watching
+    networks:
+      - neighborfit-network
 
 volumes:
-  mongo_data:
+  mongodb_data:
+  
+networks:
+  neighborfit-network:
+    driver: bridge
 ```
 
 ### Deployment Process
