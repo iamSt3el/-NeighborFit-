@@ -3,6 +3,7 @@
 ## Project Report
 
 **Live Demo:** [https://neighborfit.duckdns.org/](https://neighborfit.duckdns.org/)  
+**GitHub Repository:** [https://github.com/username/neighborfit-placement-project](https://github.com/username/neighborfit-placement-project)
 
 ---
 
@@ -10,7 +11,7 @@
 
 NeighborFit is a full-stack web application developed as a solution to the neighborhood-lifestyle matching problem for young professionals seeking PG accommodations in Bangalore. This project was completed as part of a 2-week technical assignment, demonstrating systematic problem-solving, algorithmic thinking, and full-stack development capabilities.
 
-The application leverages real-world data from over 100 PG listings across Bangalore's prime areas, implementing an intelligent matching algorithm that considers budget constraints, room preferences, gender requirements, and lifestyle factors to provide personalized recommendations with quantified match scores.
+The application leverages real-world data from over 100 PG listings across Bangalore's prime areas, implementing an intelligent matching algorithm that considers budget constraints, room preferences, gender requirements, and lifestyle factors to provide personalized recommendations with quantified match scores. The application is deployed on AWS EC2 using Docker containerization with SSL encryption and custom domain configuration.
 
 ## Problem Statement and Research
 
@@ -156,34 +157,103 @@ The matching algorithm was tested against various user scenarios:
 
 ## Deployment and Infrastructure
 
+### Production Deployment Architecture
+The application is deployed on AWS EC2 with a containerized architecture:
+
+**Container Setup:**
+- **Frontend Container:** React.js application served via Nginx
+- **Backend Container:** Node.js Express server
+- **Database Container:** MongoDB instance with persistent volumes
+- **Reverse Proxy:** Nginx for load balancing and SSL termination
+
+**Infrastructure Components:**
+- **AWS EC2 Instance:** Ubuntu server hosting the application
+- **Docker Compose:** Multi-container orchestration
+- **DuckDNS:** Free dynamic DNS service for custom domain
+- **Nginx:** Reverse proxy and SSL termination
+- **Let's Encrypt/Certbot:** SSL certificate management
+
+### SSL and Security Configuration
+- **HTTPS Encryption:** SSL certificates from Let's Encrypt
+- **Automatic Certificate Renewal:** Certbot for certificate management
+- **Security Headers:** Implemented via Nginx configuration
+- **Container Isolation:** Docker networking for service isolation
+
+### Domain and DNS Setup
+- **Custom Domain:** neighborfit.duckdns.org
+- **DNS Provider:** DuckDNS for free subdomain hosting
+- **SSL Certificate:** Let's Encrypt wildcard certificate
+- **Reverse Proxy:** Nginx routing to appropriate containers
+
 ### Environment Configuration
 The application supports multiple deployment environments:
-- Development environment with hot reloading
-- Production environment with optimized builds
-- Environment-specific database configurations
-- Secure credential management
+- **Development:** Local development with hot reloading
+- **Production:** Optimized builds with container orchestration
+- **Environment Variables:** Secure credential management via Docker secrets
+- **Database:** Persistent MongoDB storage with Docker volumes
 
-### Deployment Options
-- **Heroku:** Ready for cloud deployment with Procfile
-- **Docker:** Containerized deployment with Docker Compose
-- **Local Development:** Complete local setup instructions
+### Docker Compose Configuration
+```yaml
+version: '3.8'
+services:
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+  
+  server:
+    build: ./server
+    ports:
+      - "1000:1000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/neighborfit
+    depends_on:
+      - mongo
+  
+  mongo:
+    image: mongo:5.0
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo_data:
+```
+
+### Deployment Process
+1. **EC2 Instance Setup:** Ubuntu server with Docker and Docker Compose
+2. **Domain Configuration:** DuckDNS setup for custom domain
+3. **SSL Certificate:** Let's Encrypt certificate generation
+4. **Container Deployment:** Docker Compose multi-container setup
+5. **Nginx Configuration:** Reverse proxy and SSL termination
+6. **Database Initialization:** MongoDB container with data seeding
+7. **Health Monitoring:** Container health checks and logging
 
 ## Scalability Considerations
 
 ### Database Scalability
-- MongoDB indexing strategy for large datasets
-- Aggregation pipelines for complex queries
-- Potential for horizontal scaling with sharding
+- MongoDB containerization with persistent volumes
+- Indexing strategy optimized for query performance
+- Docker volume management for data persistence
+- Potential for horizontal scaling with container orchestration
 
 ### Application Scalability
-- Stateless server design for horizontal scaling
-- Component-based frontend architecture
-- API versioning for backward compatibility
+- Containerized architecture enables easy horizontal scaling
+- Load balancing capabilities through Nginx reverse proxy
+- Stateless server design compatible with container orchestration
+- Component-based frontend architecture with production builds
 
-### Future Scaling Opportunities
-- Microservices architecture for specialized features
-- Caching layer implementation (Redis)
-- Content delivery network integration
+### Infrastructure Scalability
+- **Container Orchestration:** Ready for Kubernetes deployment
+- **Load Balancing:** Nginx reverse proxy for traffic distribution
+- **SSL Termination:** Centralized certificate management
+- **Auto-scaling:** EC2 auto-scaling groups for high availability
+- **CDN Integration:** CloudFront or similar for global content delivery
+- **Database Clustering:** MongoDB replica sets for high availability
 
 ## Critical Analysis and Limitations
 
@@ -228,23 +298,103 @@ The implemented solution successfully addresses the core problem through:
 
 ### Prerequisites
 - Node.js 16+ and npm
-- MongoDB 5.0+
+- Docker and Docker Compose
 - Git version control
+- MongoDB 5.0+ (for local development)
 
-### Installation Steps
-1. Clone the repository
-2. Install backend dependencies: `cd server && npm install`
-3. Install frontend dependencies: `cd client && npm install`
-4. Configure environment variables
-5. Seed database: `npm run seed`
-6. Start development servers
+### Local Development Setup
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/username/neighborfit-placement-project
+   cd neighborfit-placement-project
+   ```
+
+2. **Install dependencies**
+   ```bash
+   cd server && npm install
+   cd ../client && npm install
+   ```
+
+3. **Configure environment variables**
+   ```bash
+   cd server
+   cp .env.example .env
+   # Update environment variables as needed
+   ```
+
+4. **Database setup and seeding**
+   ```bash
+   cd server
+   npm run seed
+   ```
+
+5. **Start development servers**
+   ```bash
+   # Terminal 1 - Backend
+   cd server && npm run dev
+   
+   # Terminal 2 - Frontend
+   cd client && npm start
+   ```
+
+### Docker Development Setup
+1. **Build and run containers**
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Access application**
+   - Frontend: http://localhost:3000
+   - Backend: http://localhost:1000
+   - MongoDB: localhost:27017
+
+### Production Deployment on AWS EC2
+
+1. **EC2 Instance Setup**
+   ```bash
+   # Update system
+   sudo apt update && sudo apt upgrade -y
+   
+   # Install Docker
+   sudo apt install docker.io docker-compose -y
+   sudo usermod -aG docker $USER
+   ```
+
+2. **Domain and SSL Configuration**
+   ```bash
+   # Install Nginx and Certbot
+   sudo apt install nginx certbot python3-certbot-nginx -y
+   
+   # Configure DuckDNS (update your token)
+   echo "yourtoken" | sudo tee /etc/duckdns/token
+   
+   # Generate SSL certificate
+   sudo certbot --nginx -d neighborfit.duckdns.org
+   ```
+
+3. **Deploy application**
+   ```bash
+   # Clone repository
+   git clone https://github.com/username/neighborfit-placement-project
+   cd neighborfit-placement-project
+   
+   # Deploy with Docker Compose
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
 
 ### Environment Variables
-```
+```bash
+# Development
 MONGODB_URI=mongodb://localhost:27017/neighborfit
 JWT_SECRET=your_jwt_secret_here
 PORT=1000
 NODE_ENV=development
+
+# Production
+MONGODB_URI=mongodb://mongo:27017/neighborfit
+JWT_SECRET=your_production_jwt_secret
+PORT=1000
+NODE_ENV=production
 ```
 
 ## Conclusion
@@ -256,9 +406,25 @@ The systematic approach to problem decomposition, combined with real-world data 
 **Key Achievements:**
 - Functional full-stack application with real-world data
 - Intelligent matching algorithm with weighted scoring
+- Production deployment on AWS EC2 with Docker containerization
+- SSL encryption and custom domain configuration
 - Comprehensive documentation and testing approach
-- Scalable architecture ready for production deployment
-- Clear demonstration of problem-solving methodology
+- Scalable containerized architecture
+- Clear demonstration of problem-solving and DevOps methodology
+
+**Technical Highlights:**
+- **Containerization:** Multi-container Docker setup with orchestration
+- **Cloud Deployment:** AWS EC2 production environment
+- **SSL Security:** Let's Encrypt certificate with auto-renewal
+- **Domain Management:** Custom domain via DuckDNS
+- **Reverse Proxy:** Nginx for load balancing and SSL termination
+- **Database Persistence:** MongoDB with Docker volumes
+- **Development Workflow:** Local development with production deployment pipeline
 
 ---
 
+**Author:** Himanshu  
+**Development Period:** 2 weeks  
+**Technologies:** MERN Stack, MongoDB, Node.js, Express.js, React.js, Docker, AWS EC2, Nginx, Let's Encrypt  
+**Dataset:** 100+ PG listings from Bangalore  
+**Deployment:** AWS EC2 with Docker Compose, SSL encryption, custom domain
