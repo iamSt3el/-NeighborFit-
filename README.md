@@ -228,10 +228,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=https://neighborfit.duckdns.org/api  # Updated to use your domain
-      - HOST=0.0.0.0  # Add this
-      - DANGEROUSLY_DISABLE_HOST_CHECK=true  # Add this
-      - WATCHPACK_POLLING=true  # Add this for better file watching
+      - REACT_APP_API_URL=https://neighborfit.duckdns.org/api  
+      - HOST=0.0.0.0  
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true  
+      - WATCHPACK_POLLING=true  
     networks:
       - neighborfit-network
 
