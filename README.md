@@ -2,6 +2,9 @@
 
 A full-stack MERN application that helps young professionals find ideal PG accommodations in Bangalore using an intelligent matching algorithm.
 
+# Live link (hosted on ec2)
+http://13.235.104.179:3000/
+
 ## 🎯 Project Overview
 
 NeighborFit solves the neighborhood-lifestyle matching problem by analyzing user preferences and providing personalized PG recommendations with match scores. The platform uses real data from Bangalore's prime areas and applies server-side scoring algorithms for optimal performance.
